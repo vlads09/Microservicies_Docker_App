@@ -17,7 +17,7 @@ public class TemperatureController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addTemperature(@RequestBody TemperaturePUT temperature) {
+    public ResponseEntity<Object> addTemperature(@RequestBody TemperatureDTO temperature) {
         return temperatureService.addTemperature(temperature);
     }
 
@@ -53,7 +53,7 @@ public class TemperatureController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTemperature(@PathVariable Integer id, @RequestBody TemperatureDTO temperature) {
+    public ResponseEntity<Object> updateTemperature(@PathVariable Integer id, @RequestBody TemperaturePUT temperature) {
         return temperatureService.updateTemperature(temperature, id);
     }
 
