@@ -1,0 +1,53 @@
+networks:
+  db-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+
+services:
+  db:
+    ports:
+      - "5432:5432"
+    container_name: db_postgres_container
+    networks:
+      - db-network
+    image: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - my_db-data:/var/lib/postgresql/data
+    restart: always
+  backend:
+    build: .
+    container_name: backend_app_container
+    networks:
+      - db-network
+      - backend-network
+    ports:
+      - "6000:6000"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      - db
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4:7.7
+    container_name: pgadmin_container
+    networks:
+      - db-network
+    ports:
+      - "9999:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  my_db-data:
