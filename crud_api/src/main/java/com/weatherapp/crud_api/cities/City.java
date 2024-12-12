@@ -14,10 +14,8 @@ public class City {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "idTara", unique = true, nullable = false)
     private int idTara;
 
-    @Column(name = "nume", unique = true, nullable = false)
     private String nume;
 
     private double lat;

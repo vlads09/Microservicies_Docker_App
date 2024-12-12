@@ -12,8 +12,8 @@ public class Country {
     @Column(name = "nume", unique = true, nullable = false)
     private String nume;
 
-    private double lat;
-    private double lon;
+    private Double lat;
+    private Double lon;
 
     public String getNume() {
         return nume;
@@ -31,7 +31,7 @@ public class Country {
         this.id = id;
     }
 
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
@@ -39,7 +39,7 @@ public class Country {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public Double getLon() {
         return lon;
     }
 

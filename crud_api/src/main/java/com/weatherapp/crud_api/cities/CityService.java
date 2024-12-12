@@ -29,9 +29,13 @@ public class CityService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        // Check if a country with the same name already exists
-        if (cityRepository.findByNume(city.getNume()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("");
+        if (!countryRepository.existsById(city.getIdTara())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Optional<City> existingCity = cityRepository.findByNume(city.getNume());
+        if (existingCity.isPresent() && existingCity.get().getIdTara() == city.getIdTara()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         // Save the new city

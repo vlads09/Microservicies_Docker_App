@@ -20,7 +20,7 @@ public class CountryService {
 
     public ResponseEntity<Object> newCountry(Country country) {
         // Check if country is null
-        if (country.getNume() == null) {
+        if (country.getNume() == null || country.getLat() == null || country.getLon() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         // Check if a country with the same name already exists

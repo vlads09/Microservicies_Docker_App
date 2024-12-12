@@ -29,7 +29,7 @@ public class TemperatureService {
 
     public ResponseEntity<Object> addTemperature(TemperatureDTO temperature) {
         // check if id_oras exists
-        if (temperature.getIdOras() == 0) {
+        if (temperature.getIdOras() == 0 || temperature.getValoare() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
 
@@ -42,14 +42,14 @@ public class TemperatureService {
             temp.setTemperature(temperature.getValoare());
             temp.setTimestamp(LocalDateTime.now());
             temperatureRepository.save(temp);
-            return ResponseEntity.status(HttpStatus.CREATED).body(temp.getId()); // 201
+            return ResponseEntity.status(HttpStatus.CREATED).body("{\"id\": " + temp.getId() + "}");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
         }
     }
 
     public ResponseEntity<Object> updateTemperature(TemperatureDTO temperature, Integer id) {
-        if (id == 0) {
+        if (id == null || temperature.getIdOras() == null || temperature.getValoare() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
 
@@ -65,7 +65,7 @@ public class TemperatureService {
 
     public ResponseEntity<Object> getTemperatureByConditions(TemperatureParams params) {
         if (params.isNull()) {
-            return ResponseEntity.status(HttpStatus.OK).body(temperatureRepository.findAllPretty());
+            return ResponseEntity.status(HttpStatus.OK).body("[]");
         }
 
         List<Integer> citiesIds;

@@ -1,11 +1,11 @@
 package com.weatherapp.crud_api.temperature;
 
 public class TemperatureDTO {
-    private int idOras;
-    private double valoare; // Represents the temperature value
+    private Integer idOras;
+    private Double valoare; // Represents the temperature value
 
     // Getters and Setters
-    public int getIdOras() {
+    public Integer getIdOras() {
         return idOras;
     }
 
@@ -13,7 +13,7 @@ public class TemperatureDTO {
         this.idOras = idOras;
     }
 
-    public double getValoare() {
+    public Double getValoare() {
         return valoare;
     }
 

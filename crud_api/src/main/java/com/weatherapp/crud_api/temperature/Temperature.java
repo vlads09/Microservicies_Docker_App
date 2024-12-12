@@ -18,10 +18,8 @@ public class Temperature {
 
     private double temperature;
 
-    @Column(name = "timestamp", unique = true, nullable = false)
     private LocalDateTime timestamp;
 
-    @Column(name = "id_oras", unique = true, nullable = false)
     private int idOras;
 
     public int getId() {
