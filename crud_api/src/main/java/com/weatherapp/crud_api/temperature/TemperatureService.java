@@ -48,9 +48,9 @@ public class TemperatureService {
         }
     }
 
-    public ResponseEntity<Object> updateTemperature(TemperatureDTO temperature, Integer id) {
+    public ResponseEntity<Object> updateTemperature(TemperaturePUT temperature, Integer id) {
         if (id == null || temperature.getIdOras() == null || temperature.getValoare() == null
-                || !temperatureRepository.existsById(id)) {
+                || !temperatureRepository.existsById(id) || !id.equals(temperature.getId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
 

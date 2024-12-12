@@ -17,7 +17,7 @@ public class TemperatureController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addTemperature(@RequestBody TemperatureDTO temperature) {
+    public ResponseEntity<Object> addTemperature(@RequestBody TemperaturePUT temperature) {
         return temperatureService.addTemperature(temperature);
     }
 
