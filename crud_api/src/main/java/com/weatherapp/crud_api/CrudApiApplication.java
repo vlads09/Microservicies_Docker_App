@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CrudApiApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(CrudApiApplication.class, args);
-		System.out.println("Hello World!");
-	}
+        SpringApplication.run(CrudApiApplication.class, args);
+        System.out.println("App is up and running!");
+    }
 
 }

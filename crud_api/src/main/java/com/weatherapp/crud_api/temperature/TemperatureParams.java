@@ -1,11 +1,11 @@
 package com.weatherapp.crud_api.temperature;
 
 public class TemperatureParams {
-    private Double latitude;
-    private Double longitude;
+    private final Double latitude;
+    private final Double longitude;
 
     private String from;
-    private String until;
+    private final String until;
 
     public TemperatureParams(Double latitude, Double longitude, String from, String until) {
         this.latitude = latitude;
@@ -18,32 +18,18 @@ public class TemperatureParams {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
     public Double getLongitude() {
         return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
     }
 
     public String getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
+
 
     public String getUntil() {
         return until;
-    }
-
-    public void setUntil(String until) {
-        this.until = until;
     }
 
     public boolean isNull() {

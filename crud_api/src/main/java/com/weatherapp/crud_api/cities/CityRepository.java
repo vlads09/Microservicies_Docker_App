@@ -3,6 +3,7 @@ package com.weatherapp.crud_api.cities;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ public interface CityRepository extends CrudRepository<City, Integer> {
     Optional<City> findByNume(String nume);
     Optional<City> findById(Integer id);
     Iterable<City> findAllByIdTara(int id);
-    boolean existsById(Integer id);
+    boolean existsById(@NonNull Integer id);
 
     @Query("SELECT c.id FROM City c WHERE c.lat = :latitude")
     List<Integer> findIdsByLat(@Param("latitude") Double latitude);
@@ -25,7 +26,4 @@ public interface CityRepository extends CrudRepository<City, Integer> {
 
     @Query("SELECT c.id FROM City c WHERE c.idTara = :idCountry")
     List<Integer> findAllIdsByIdTara(@Param("idCountry") Integer idCountry);
-
-
-
 }

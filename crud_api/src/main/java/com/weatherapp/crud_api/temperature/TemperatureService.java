@@ -1,15 +1,12 @@
 package com.weatherapp.crud_api.temperature;
 
-import com.weatherapp.crud_api.cities.City;
 import com.weatherapp.crud_api.cities.CityRepository;
 import com.weatherapp.crud_api.countries.CountryRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +25,21 @@ public class TemperatureService {
     }
 
     public ResponseEntity<Object> addTemperature(TemperatureDTO temperature) {
-        // check if id_oras exists
-        if (temperature.getIdOras() == 0 || temperature.getValoare() == null) {
+        // check if the request was made correctly
+        if (temperature.getIdOras() == null || temperature.getValoare() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
 
+        // check if the city exists in the db
         if (cityRepository.existsById(temperature.getIdOras())) {
+            // if the request was submitted at the same time with another exactly the same
             if (temperatureRepository.existsByTimestamp(LocalDateTime.now())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
             }
+
+            // Save the temperature
             Temperature temp = new Temperature();
-            temp.setId_oras(temperature.getIdOras());
+            temp.setIdOras(temperature.getIdOras());
             temp.setTemperature(temperature.getValoare());
             temp.setTimestamp(LocalDateTime.now());
             temperatureRepository.save(temp);
@@ -49,13 +50,17 @@ public class TemperatureService {
     }
 
     public ResponseEntity<Object> updateTemperature(TemperaturePUT temperature, Integer id) {
+        // Check if the request was made correctly
         if (id == null || temperature.getIdOras() == null || temperature.getValoare() == null
                 || !temperatureRepository.existsById(id) || !id.equals(temperature.getId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
 
+        // Check if the city id exists
         if (cityRepository.existsById(temperature.getIdOras())) {
             Optional<Temperature> existingTemp = temperatureRepository.findById(id);
+
+            // Update
             existingTemp.get().setTemperature(temperature.getValoare());
             temperatureRepository.save(existingTemp.get());
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -65,6 +70,7 @@ public class TemperatureService {
     }
 
     public ResponseEntity<Object> getTemperatureByConditions(TemperatureParams params) {
+        // If there are no parameters sent, then return an empty list
         if (params.isNull()) {
             return ResponseEntity.status(HttpStatus.OK).body("[]");
         }
@@ -72,12 +78,14 @@ public class TemperatureService {
         List<Integer> citiesIds;
         LocalDateTime from = null;
         LocalDateTime until = null;
+        // Set the times so they correspond with the timestamp in database
         if (params.getFrom() != null) {
             from = LocalDateTime.parse(params.getFrom() + "T00:00:00");
         }
         if (params.getUntil() != null) {
             until = LocalDateTime.parse(params.getUntil() + "T23:59:59");
         }
+        // Return the temperatures based on which parameters were provided
         return switch (params.whichCase()) {
             case NULL_BESIDES_LATITUDE -> {
                 citiesIds = cityRepository.findIdsByLat(params.getLatitude());
@@ -152,10 +160,12 @@ public class TemperatureService {
         LocalDateTime from = null;
         LocalDateTime until = null;
 
+        // Check if the city id provided in path exists
         if (!cityRepository.existsById(cityId)) {
             return ResponseEntity.status(HttpStatus.OK).body("[]");
         }
 
+        // Set the timers so they correspond with the timestamp in database
         if (params.getFrom() != null) {
             from = LocalDateTime.parse(params.getFrom() + "T00:00:00");
         }
@@ -164,6 +174,7 @@ public class TemperatureService {
             until = LocalDateTime.parse(params.getUntil() + "T23:59:59");
         }
 
+        // Return the temperatures based on the parameters provided
         return switch (params.whichCase()) {
             case NULL_BESIDES_COORDS ->
                     ResponseEntity.status(HttpStatus.OK).body(temperatureRepository.findById(cityId));
@@ -176,11 +187,13 @@ public class TemperatureService {
         };
     }
 
+    // Corner-Case if no id was provided in the path
     public ResponseEntity<Object> getTemperaturesCityByDate2() {
         return ResponseEntity.status(HttpStatus.OK).body("[]");
     }
 
     public ResponseEntity<Object> getAllTemperaturesByCountry(Integer idCountry) {
+        // Check if the country id exists in the db
         if (!countryRepository.existsById(idCountry)) {
             return ResponseEntity.status(HttpStatus.OK).body("[]");
         }
@@ -191,6 +204,7 @@ public class TemperatureService {
                 findAllByCityIds(citiesId));
     }
 
+    // Corner-Case if no id was provided in the path
     public ResponseEntity<Object> getAllTemperaturesByCountry2() {
         return ResponseEntity.status(HttpStatus.OK).body("[]");
     }

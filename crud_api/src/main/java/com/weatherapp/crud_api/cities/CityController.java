@@ -1,6 +1,5 @@
 package com.weatherapp.crud_api.cities;
 
-import com.weatherapp.crud_api.countries.Country;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

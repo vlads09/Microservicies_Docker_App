@@ -13,12 +13,6 @@ public interface TemperatureRepository extends CrudRepository<Temperature, Integ
 
     @Query("SELECT t.id AS id, t.temperature AS valoare, " +
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
-            "FROM Temperature t")
-
-    Iterable<Map<String, Object>> findAllPretty();
-
-    @Query("SELECT t.id AS id, t.temperature AS valoare, " +
-            "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
             "FROM Temperature t WHERE t.idOras IN :cityIds")
     List<Map<String, Object>> findAllByCityIds(@Param("cityIds") List<Integer> cityIds);
 
@@ -36,7 +30,7 @@ public interface TemperatureRepository extends CrudRepository<Temperature, Integ
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
             "FROM Temperature t WHERE t.timestamp BETWEEN :from AND :until")
     List<Map<String, Object>> findAllByTimestampBetween(@Param("from") LocalDateTime from,
-                                                       @Param("until") LocalDateTime until);
+                                                        @Param("until") LocalDateTime until);
 
     @Query("SELECT t.id AS id, t.temperature AS valoare, " +
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
@@ -48,13 +42,13 @@ public interface TemperatureRepository extends CrudRepository<Temperature, Integ
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
             "FROM Temperature t WHERE t.timestamp <= :time AND t.id in :citiesIds")
     List<Map<String, Object>> findAllByCitiesIdsAndTimestampBefore(@Param("time") LocalDateTime time,
-                                                                  @Param("citiesIds") List<Integer> citiesIds);
+                                                                   @Param("citiesIds") List<Integer> citiesIds);
 
     @Query("SELECT t.id AS id, t.temperature AS valoare, " +
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
             "FROM Temperature t WHERE (t.timestamp BETWEEN :from AND :until) AND t.id in :citiesIds")
     List<Map<String, Object>> findAllByCitiesIdsAndTimestampBetween(@Param("from") LocalDateTime from,
-                                                                   @Param("until") LocalDateTime until,
-                                                                   @Param("citiesIds") List<Integer> citiesIds);
+                                                                    @Param("until") LocalDateTime until,
+                                                                    @Param("citiesIds") List<Integer> citiesIds);
 
 }

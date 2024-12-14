@@ -1,53 +1,57 @@
+# Resources:
+# https://medium.com/@saygiligozde/using-docker-compose-with-spring-boot-and-postgresql-235031106f9f
+
 networks:
-  db-network:
+  db-network:  # Network which is used for communication between the database, backend and pgAdmin
     driver: bridge
-  backend-network:
+  backend-network:  # Different network for backend communication
     driver: bridge
 
 services:
   db:
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Expose port 5432 on the host to connect to the PostgresSQL container
     container_name: db_postgres_container
     networks:
-      - db-network
+      - db-network  # Connect the database
     image: postgres
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    environment: # Values from the .env file
+      - POSTGRES_DB=${POSTGRES_DB}  # Database name
+      - POSTGRES_USER=${POSTGRES_USER}  # Database username
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Database password
     volumes:
-      - my_db-data:/var/lib/postgresql/data
-    restart: always
+      - my_db-data:/var/lib/postgresql/data  # Persist PostgreSQL data in a volume
+    restart: always  # Restart the container if it stops
+
   backend:
-    build: .
+    build: .  # Use the image from the Dockerfile that is in the current directory
     container_name: backend_app_container
     networks:
-      - db-network
-      - backend-network
+      - db-network  # Connect to the database network
+      - backend-network  # Connect to the backend network
     ports:
-      - "6000:6000"
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      - "6000:6000"  # Expose port 6000 for the backend service
+    environment: # Values form the .env file
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}  # Spring datasource URL
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}  # Spring datasource username
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  # Spring datasource password
     depends_on:
-      - db
-    restart: always
+      - db  # Database container starts before the backend container
+    restart: always  # Restart the container if it stops
 
-  pgadmin:
+  pgadmin:  # pgAdmin service for managing the PostgreSQL database
     image: dpage/pgadmin4:7.7
     container_name: pgadmin_container
     networks:
-      - db-network
+      - db-network  # Connect to the database network
     ports:
-      - "9999:80"
+      - "9999:80"  # Expose port 9999 on the host for accessing the pgAdmin web interface
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}  # Default email for pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}  # Default password for pgAdmin
     depends_on:
-      - db
-    restart: always
+      - db  # Database container starts before the pgAdmin container
+    restart: always  # Restart the container if it stops
 
 volumes:
-  my_db-data:
+  my_db-data:  # Volume used for persisting PostgreSQL data

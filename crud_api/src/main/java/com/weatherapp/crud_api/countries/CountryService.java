@@ -19,10 +19,11 @@ public class CountryService {
     }
 
     public ResponseEntity<Object> newCountry(Country country) {
-        // Check if country is null
+        // Check if the request was made correctly
         if (country.getNume() == null || country.getLat() == null || country.getLon() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
         // Check if a country with the same name already exists
         if (countryRepository.findByNume(country.getNume()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("");
@@ -41,16 +42,28 @@ public class CountryService {
     }
 
     public ResponseEntity<Object> updateCountry(Country country, Integer id) {
-        // Check if the id exists
-        if (country.getId() == 0 || country.getNume() == null) {
+        // Check if the request was made correctly
+        if (country.getId() == null || country.getNume() == null
+                || country.getLat() == null
+                || country.getLon() == null
+                || !country.getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
+        // Check if the country with the id provided exists in the db
         if (countryRepository.findById(id).isPresent()) {
             Optional<Country> existingCountry = countryRepository.findById(id);
-            if (!country.getNume().equals(existingCountry.get().getNume()) &&
-                    countryRepository.findByNume(existingCountry.get().getNume()).isPresent()) {
+
+            // Check if the request can update
+            // Return conflict if:
+            // 1. The name in the request and the country to be modified are different
+            // 2. There is a country with the same name other than the one to be modified
+            if (!country.getNume().equals(existingCountry.get().getNume())
+                    && countryRepository.findByNume(country.getNume()).isPresent()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("");
             }
+
+            // Update
             existingCountry.get().setNume(country.getNume());
             existingCountry.get().setLat(country.getLat());
             existingCountry.get().setLon(country.getLon());

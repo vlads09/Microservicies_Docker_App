@@ -14,27 +14,27 @@ import java.time.LocalDateTime;
 public class Temperature {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
-    private double temperature;
+    private Double temperature;
 
     private LocalDateTime timestamp;
 
-    private int idOras;
+    private Integer idOras;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public double getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(double temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
     }
 
@@ -46,11 +46,11 @@ public class Temperature {
         this.timestamp = timestamp;
     }
 
-    public int getId_oras() {
+    public Integer getIdOras() {
         return idOras;
     }
 
-    public void setId_oras(int id_oras) {
-        this.idOras = id_oras;
+    public void setIdOras(Integer idOras) {
+        this.idOras = idOras;
     }
 }

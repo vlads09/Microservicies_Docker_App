@@ -7,13 +7,21 @@ import jakarta.persistence.*;
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column(name = "nume", unique = true, nullable = false)
     private String nume;
 
     private Double lat;
     private Double lon;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNume() {
         return nume;
@@ -23,19 +31,11 @@ public class Country {
         this.nume = nume;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
@@ -43,7 +43,7 @@ public class Country {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 }

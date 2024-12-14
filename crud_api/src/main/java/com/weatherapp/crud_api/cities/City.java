@@ -12,14 +12,14 @@ import jakarta.persistence.*;
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
-    private int idTara;
+    private Integer idTara;
 
     private String nume;
 
-    private double lat;
-    private double lon;
+    private Double lat;
+    private Double lon;
 
     public String getNume() {
         return nume;
@@ -29,35 +29,35 @@ public class City {
         this.nume = nume;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
-    public int getIdTara() {
+    public Integer getIdTara() {
         return idTara;
     }
 
-    public void setIdTara(int idTara) {
+    public void setIdTara(Integer idTara) {
         this.idTara = idTara;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }
