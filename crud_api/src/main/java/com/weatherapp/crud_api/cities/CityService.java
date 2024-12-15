@@ -1,6 +1,7 @@
 package com.weatherapp.crud_api.cities;
 
 import com.weatherapp.crud_api.countries.CountryRepository;
+import com.weatherapp.crud_api.temperature.TemperatureRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ public class CityService {
     @Autowired
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
+    @Autowired
+    private TemperatureRepository temperatureRepository;
 
     public CityService(CityRepository cityRepository, CountryRepository countryRepository) {
         this.cityRepository = cityRepository;
@@ -100,6 +103,8 @@ public class CityService {
     @Transactional
     public ResponseEntity<Object> deleteCity(Integer id) {
         if (cityRepository.findById(id).isPresent()) {
+            // Delete the temperatures related to the city
+            temperatureRepository.deleteAllByIdOras(id);
             cityRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

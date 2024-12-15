@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface TemperatureRepository extends CrudRepository<Temperature, Integer> {
     boolean existsByTimestamp(LocalDateTime timestamp);
-
+    void deleteAllByIdOras(Integer id);
     @Query("SELECT t.id AS id, t.temperature AS valoare, " +
             "TO_CHAR(t.timestamp, 'YYYY-MM-DD') AS timestamp " +
             "FROM Temperature t WHERE t.idOras IN :cityIds")

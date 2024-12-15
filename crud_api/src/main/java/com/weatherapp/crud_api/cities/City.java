@@ -1,6 +1,9 @@
 package com.weatherapp.crud_api.cities;
 
+import com.weatherapp.crud_api.temperature.Temperature;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(

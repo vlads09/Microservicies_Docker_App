@@ -1,21 +1,29 @@
 package com.weatherapp.crud_api.countries;
 
+import com.weatherapp.crud_api.cities.City;
+import com.weatherapp.crud_api.cities.CityRepository;
+import com.weatherapp.crud_api.temperature.TemperatureRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CountryService {
 
     private final CountryRepository countryRepository;
+    private final CityRepository cityRepository;
+    private final TemperatureRepository temperatureRepository;
 
     @Autowired
-    public CountryService(CountryRepository countryRepository) {
+    public CountryService(CountryRepository countryRepository, CityRepository cityRepository, TemperatureRepository temperatureRepository) {
         this.countryRepository = countryRepository;
+        this.cityRepository = cityRepository;
+        this.temperatureRepository = temperatureRepository;
     }
 
     public ResponseEntity<Object> newCountry(Country country) {
@@ -77,6 +85,13 @@ public class CountryService {
     @Transactional
     public ResponseEntity<Object> deleteCountry(Integer id) {
         if (countryRepository.findById(id).isPresent()) {
+            // Find all the cities from the country
+            // And delete them and their temperatures
+            Iterable<City> cities = cityRepository.findAllByIdTara(id);
+            for (City city : cities) {
+                temperatureRepository.deleteAllByIdOras(city.getId());
+                cityRepository.deleteById(city.getId());
+            }
             countryRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

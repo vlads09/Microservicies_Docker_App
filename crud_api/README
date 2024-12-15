@@ -1,0 +1,86 @@
+Simion George-Vlad
+342C5
+
+            Microservices and Docker - WeatherApp using API REST implementation
+
+    The application consists of a backend implementation in Java Spring Boot and and a database
+which is handled by PostgreSQL. In order to view the database, PgAdmin from PostgreSQL was added.
+    After initializing Spring Boot and the dependencies needed (check 1. at the end), the tables
+were created. In Java Spring Boot, in order to create a table, you can create a Java Class and
+add at the beginning the annotation called @Entity. That is how the Country, the City and the
+Temperature tables were created in the database. For creating with the referenced names and in
+order to add constraints, for each class it was also added the @Table annotation.
+    Next step was to define the controllers for each class, in which it were defined the paths
+that users can send their API REST requests needed. For Spring Boot, there are two annotations
+that must be used: @RestController and @RequestMapping. The latter was added in order to specify
+the standard prefix for the path. In order to use the repositories which will be defined later
+the @Autowired annotation on the grounds that is used for dependency injection. Each method in
+controller is a request type (POST, GET, PUT, DELETE) and in order to map it, annotation was
+necessary (for instance: @PostMapping).
+    Let's talk about the repositories. Each class (table) use a repository. In the context of
+Spring Data JPA, a repository is a central part of the data access layer. Its purpose is to
+abstract and simplify the interaction between the application and the database. For this weather
+application, there are also custom queries in order to access certain objects based on criteria
+that the default Spring Data JPA does not provide.
+    Last part is about the services. This where the actual implementation is made. The purpose
+of each method is to provide a ResponseEntity Object with the result that the controller needs
+and the repositories are used. Let's look at each service:
+    1. CountryService: its attributes are the repositories of Country, City and Temperature.
+They are all used since when it comes to deleting a country, its cities and the temperatures
+registered in database for each city need to be deleted too (one to many and many to one situation).
+For the delete method, @Transactional annotation was added since it is an operation on the database
+and the purpose of it is to ensure data consistency and integrity. This is applied to all services.
+Each method has its comments with the explanation of the logic.
+    2. CityService: its attributes are the repositories of Country, City and Temperature.
+CountryRepository is used for making sure that a request uses a country id that exists.
+TemperatureRepository plays a key role in order to remove the temperatures that a city which is
+going to be deleted has. Each method has its comments with the explanation of the logic.
+    3. TemperatureService: its attributes are the repositories of Country, City and Temperature.
+CountryRepository is used for when an user wants to get the temperatures of a country, the app
+needs to verify if the id provided in the path exists in the database. CityRepository is used
+so that it verifies if a city id was provided correctly either in request or the path and also
+for the methods that are used in GET requests that have different parameters which are attributes
+in the City class, custom queries that returns cities' ids are needed in order to get the correct
+temperatures. For this part, in order to treat each case of GET request with parameters,
+TemperatureParams class was defined having the parameters provided as attributes and an encoding
+for each situation of how a request provides the parameters. Each method has its comments with the
+explanation of the logic.
+
+    Microservices and Docker:
+    The application is dockerized and this is how the logic of it is:
+
+    1. Dockerfile - creates a multi-stage build setup for the application using Maven and OpenJDK.
+In the build stage, it uses a Maven image (maven:3.8.5-openjdk-17) to compile the project and package
+it into a .jar file. In the runtime stage, it uses an OpenJDK image (openjdk:17-jdk) to provide
+a lightweight environment for running the application. The .jar file generated in the build stage is
+copied into the runtime container. The application exposes port 6000 to allow external access and
+is executed with java -jar.
+    2. Docker-compose.yaml - sets up a multi-service architecture for a Spring Boot application,
+PostgreSQL database, and pgAdmin management tool.
+    2.1 Networks
+    * db-network connects the PostgreSQL database, the backend application, and pgAdmin.
+    * backend-network separates network used for backend communication, allowing for isolation of
+the backend.
+
+    2.2 Services
+    * The db service uses the official postgres Docker image to run a PostgreSQL container. It
+exposes port 5432 to enable external connections to the database. The database credentials are
+configured through environment variables specified in the .env file. The database data is persisted
+in a Docker volume, named my_db-data, to ensure that data remains intact even if the container
+is stopped or removed. The service is also set to restart automatically if the container crashes or
+is stopped.
+    * The backend service builds the Spring Boot application from the local Dockerfile. It is
+connected to both the db-network (for database access) and backend-network (for backend communication).
+The service exposes port 6000, allowing external access to the backend application. Spring Boot
+application's connection to the PostgreSQL database is made with the credentials provided in the
+.env file. The backend service is set to depend on the db service, meaning that the database must
+start before the backend container starts. The container is also set to restart automatically in
+case of failure.
+    * The pgadmin service uses the dpage/pgadmin4:7.7 image to run pgAdmin, a web-based PostgreSQL
+management tool. It is connected to the db-network, allowing it to communicate with the PostgreSQL
+database. The service exposes port 9999, so you can access pgAdmin's web interface through your
+browser at http://localhost:9999. The admin credentials are configured using environment variables
+defined in the .env file. pgAdmin will start only after the db service is up and running, ensuring
+it has access to the database. The container is also set to restart automatically if it stops.
+
+    2.3 Volumes - my_db-data volume is defined to ensure the persistence of PostgreSQL data.
